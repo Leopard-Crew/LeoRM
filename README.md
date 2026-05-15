@@ -24,3 +24,10 @@ But it keeps SQL visible, schemas open, and domain models outside the core.
 - SQLite is the storage authority.
 - Foundation is the object vocabulary.
 - LeoRM is the thin Leopard-shaped bridge.
+
+## Architecture notes
+
+- [Scope lock](docs/scope-lock.md)
+- [Core Data lessons](docs/design-notes/core-data-lessons.md)
+- [SQLite boundaries](docs/design-notes/sqlite-boundaries.md)
+- [Rejected patterns](docs/design-notes/rejected-patterns.md)
