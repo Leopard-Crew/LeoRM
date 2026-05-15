@@ -1,5 +1,7 @@
 # LeoRM
 
-LeoRM is a Leopard-native Repository/DAO layer for SQLite. Inspired by ORM principles.
+LeoRM is a Leopard-native Repository/DAO layer for explicit SQLite-backed Cocoa objects. Inspired by ORM principles.
+
+Repository/DAO layer for explicit SQLite-backed Cocoa objects.
 
 It provides small, explicit Objective-C building blocks for schema management, transactions, prepared statements, migrations, and row-to-object mapping. Domain-specific stores must live in separate layers built on top of LeoRM. 
