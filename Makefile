@@ -16,7 +16,7 @@ OBJCFLAGS = $(CFLAGS)
 LDFLAGS = -isysroot $(SDKROOT) -mmacosx-version-min=10.5 -arch $(ARCH)
 LIBS = -framework Foundation -lsqlite3
 
-.PHONY: all clean smoke
+.PHONY: all clean smoke apidocs clean-docs
 
 all: $(BUILD_DIR)/libLeoRM.a $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke $(BUILD_DIR)/lrm-metadata-smoke $(BUILD_DIR)/lrm-migration-smoke $(BUILD_DIR)/lrm-repository-smoke $(BUILD_DIR)/lrm-notes-example
 
@@ -99,6 +99,12 @@ smoke: $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-stat
 	$(BUILD_DIR)/lrm-migration-smoke
 	$(BUILD_DIR)/lrm-repository-smoke
 	$(BUILD_DIR)/lrm-notes-example
+
+apidocs:
+	Tools/build_headerdoc.sh
+
+clean-docs:
+	rm -rf $(BUILD_DIR)/HeaderDoc
 
 clean:
 	rm -rf $(BUILD_DIR)
