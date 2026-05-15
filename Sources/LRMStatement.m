@@ -121,7 +121,7 @@
         } else {
             result = sqlite3_bind_int64(_statement,
                                         (int)index,
-                                        (sqlite3_int64)[value longLongValue]);
+                                        (long long)[value longLongValue]);
         }
     } else if ([value isKindOfClass:[NSData class]]) {
         result = sqlite3_bind_blob(_statement,
