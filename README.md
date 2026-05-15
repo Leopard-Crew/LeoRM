@@ -37,6 +37,7 @@ But it keeps SQL visible, schemas open, and domain models outside the core.
 ## Quality and positioning
 
 - [LeoRM for the skeptical programmer](docs/positioning/skeptical-programmer.md)
+- [Plain SQLite vs LeoRM](docs/positioning/plain-sqlite-vs-leorm.md)
 - [Cupertino 2009 API culture](docs/quality/cupertino-2009-api-culture.md)
 - [Release gates](docs/quality/release-gates.md)
 
