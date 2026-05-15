@@ -18,7 +18,7 @@ LIBS = -framework Foundation -lsqlite3
 
 .PHONY: all clean smoke apidocs clean-docs
 
-all: $(BUILD_DIR)/libLeoRM.a $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke $(BUILD_DIR)/lrm-metadata-smoke $(BUILD_DIR)/lrm-migration-smoke $(BUILD_DIR)/lrm-repository-smoke $(BUILD_DIR)/lrm-notes-example
+all: $(BUILD_DIR)/libLeoRM.a $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke $(BUILD_DIR)/lrm-metadata-smoke $(BUILD_DIR)/lrm-migration-smoke $(BUILD_DIR)/lrm-repository-smoke $(BUILD_DIR)/lrm-notes-example $(BUILD_DIR)/lrm-failure-paths-smoke
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
@@ -89,7 +89,10 @@ $(BUILD_DIR)/NotesStoreNoteStore.o: Examples/NotesStore/NoteStore.m Examples/Not
 $(BUILD_DIR)/lrm-notes-example: Examples/NotesStore/main.m Examples/NotesStore/Note.h Examples/NotesStore/NoteStore.h $(BUILD_DIR)/NotesStoreNote.o $(BUILD_DIR)/NotesStoreNoteStore.o $(BUILD_DIR)/libLeoRM.a
 	$(CC) $(OBJCFLAGS) Examples/NotesStore/main.m $(BUILD_DIR)/NotesStoreNote.o $(BUILD_DIR)/NotesStoreNoteStore.o $(BUILD_DIR)/libLeoRM.a $(LIBS) -o $@
 
-smoke: $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke $(BUILD_DIR)/lrm-metadata-smoke $(BUILD_DIR)/lrm-migration-smoke $(BUILD_DIR)/lrm-repository-smoke $(BUILD_DIR)/lrm-notes-example
+$(BUILD_DIR)/lrm-failure-paths-smoke: Tests/failure_paths_main.m $(BUILD_DIR)/libLeoRM.a
+	$(CC) $(OBJCFLAGS) Tests/failure_paths_main.m $(BUILD_DIR)/libLeoRM.a $(LIBS) -o $@
+
+smoke: $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke $(BUILD_DIR)/lrm-metadata-smoke $(BUILD_DIR)/lrm-migration-smoke $(BUILD_DIR)/lrm-repository-smoke $(BUILD_DIR)/lrm-notes-example $(BUILD_DIR)/lrm-failure-paths-smoke
 	$(BUILD_DIR)/lrm-smoke
 	$(BUILD_DIR)/lrm-error-smoke
 	$(BUILD_DIR)/lrm-statement-smoke
@@ -99,6 +102,7 @@ smoke: $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-stat
 	$(BUILD_DIR)/lrm-migration-smoke
 	$(BUILD_DIR)/lrm-repository-smoke
 	$(BUILD_DIR)/lrm-notes-example
+	$(BUILD_DIR)/lrm-failure-paths-smoke
 
 apidocs:
 	Tools/build_headerdoc.sh
