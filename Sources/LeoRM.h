@@ -16,3 +16,4 @@
 #import "LRMMigration.h"
 #import "LRMSchema.h"
 #import "LRMMigrationRunner.h"
+#import "LRMRepository.h"
