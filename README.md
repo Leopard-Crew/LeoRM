@@ -1,2 +1,5 @@
 # LeoRM
-A small Mac OS X 10.5.8 Leopard PowerPC-native repository/DAO layer built on top of SQLite. Inspired by ORM principles.
+
+LeoRM is a Leopard-native Repository/DAO layer for SQLite. Inspired by ORM principles.
+
+It provides small, explicit Objective-C building blocks for schema management, transactions, prepared statements, migrations, and row-to-object mapping. Domain-specific stores must live in separate layers built on top of LeoRM. 
