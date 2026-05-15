@@ -32,7 +32,9 @@ cd "$ROOT_DIR"
 
 COMMIT="$(git rev-parse HEAD)"
 SHORT_COMMIT="$(git rev-parse --short HEAD)"
-ARCHIVE_ROOT="LeoRM-$VERSION"
+PUBLIC_VERSION="$(echo "$VERSION" | sed 's/^v//' | sed 's/-.*//')"
+PACKAGE_NAME="LeoRM-$PUBLIC_VERSION-leopard-ppc"
+ARCHIVE_ROOT="$PACKAGE_NAME"
 RELEASE_DIR="$ROOT_DIR/Build/Release"
 STAGING_DIR="$RELEASE_DIR/$ARCHIVE_ROOT"
 ARCHIVE_PATH="$RELEASE_DIR/$ARCHIVE_ROOT.tar.gz"
@@ -45,8 +47,10 @@ if [ -n "$(git status --short)" ]; then
 fi
 
 echo "LeoRM release archive build"
-echo "Version: $VERSION"
-echo "Commit:  $COMMIT"
+echo "Release tag:     $VERSION"
+echo "Public version:  $PUBLIC_VERSION"
+echo "Package name:    $PACKAGE_NAME"
+echo "Commit:          $COMMIT"
 
 make clean
 make
@@ -65,8 +69,14 @@ cat > "$MANIFEST_PATH" <<MANIFEST
 LeoRM Release Manifest
 ======================
 
-Version:
+Release tag:
   $VERSION
+
+Public version:
+  $PUBLIC_VERSION
+
+Package name:
+  $PACKAGE_NAME
 
 Commit:
   $COMMIT
