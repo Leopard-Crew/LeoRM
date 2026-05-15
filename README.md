@@ -18,7 +18,7 @@ It borrows concepts from Core Data where they fit Leopard:
 
 But it keeps SQL visible, schemas open, and domain models outside the core.
 
-## Preject rules
+## Project rules
 
 - Core Data is the conceptual benchmark.
 - SQLite is the storage authority.
