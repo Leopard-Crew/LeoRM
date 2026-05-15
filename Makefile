@@ -18,7 +18,7 @@ LIBS = -framework Foundation -lsqlite3
 
 .PHONY: all clean smoke
 
-all: $(BUILD_DIR)/libLeoRM.a $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke $(BUILD_DIR)/lrm-metadata-smoke $(BUILD_DIR)/lrm-migration-smoke $(BUILD_DIR)/lrm-repository-smoke
+all: $(BUILD_DIR)/libLeoRM.a $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke $(BUILD_DIR)/lrm-metadata-smoke $(BUILD_DIR)/lrm-migration-smoke $(BUILD_DIR)/lrm-repository-smoke $(BUILD_DIR)/lrm-notes-example
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
@@ -80,7 +80,16 @@ $(BUILD_DIR)/lrm-migration-smoke: Tests/migration_main.m $(BUILD_DIR)/libLeoRM.a
 $(BUILD_DIR)/lrm-repository-smoke: Tests/repository_main.m $(BUILD_DIR)/libLeoRM.a
 	$(CC) $(OBJCFLAGS) Tests/repository_main.m $(BUILD_DIR)/libLeoRM.a $(LIBS) -o $@
 
-smoke: $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke $(BUILD_DIR)/lrm-metadata-smoke $(BUILD_DIR)/lrm-migration-smoke $(BUILD_DIR)/lrm-repository-smoke
+$(BUILD_DIR)/NotesStoreNote.o: Examples/NotesStore/Note.m Examples/NotesStore/Note.h | $(BUILD_DIR)
+	$(CC) $(OBJCFLAGS) -c Examples/NotesStore/Note.m -o $@
+
+$(BUILD_DIR)/NotesStoreNoteStore.o: Examples/NotesStore/NoteStore.m Examples/NotesStore/NoteStore.h Examples/NotesStore/Note.h $(BUILD_DIR)/libLeoRM.a | $(BUILD_DIR)
+	$(CC) $(OBJCFLAGS) -c Examples/NotesStore/NoteStore.m -o $@
+
+$(BUILD_DIR)/lrm-notes-example: Examples/NotesStore/main.m Examples/NotesStore/Note.h Examples/NotesStore/NoteStore.h $(BUILD_DIR)/NotesStoreNote.o $(BUILD_DIR)/NotesStoreNoteStore.o $(BUILD_DIR)/libLeoRM.a
+	$(CC) $(OBJCFLAGS) Examples/NotesStore/main.m $(BUILD_DIR)/NotesStoreNote.o $(BUILD_DIR)/NotesStoreNoteStore.o $(BUILD_DIR)/libLeoRM.a $(LIBS) -o $@
+
+smoke: $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke $(BUILD_DIR)/lrm-metadata-smoke $(BUILD_DIR)/lrm-migration-smoke $(BUILD_DIR)/lrm-repository-smoke $(BUILD_DIR)/lrm-notes-example
 	$(BUILD_DIR)/lrm-smoke
 	$(BUILD_DIR)/lrm-error-smoke
 	$(BUILD_DIR)/lrm-statement-smoke
@@ -89,6 +98,7 @@ smoke: $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-stat
 	$(BUILD_DIR)/lrm-metadata-smoke
 	$(BUILD_DIR)/lrm-migration-smoke
 	$(BUILD_DIR)/lrm-repository-smoke
+	$(BUILD_DIR)/lrm-notes-example
 
 clean:
 	rm -rf $(BUILD_DIR)
