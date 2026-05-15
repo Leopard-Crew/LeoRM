@@ -12,3 +12,4 @@
 #import "LRMStatement.h"
 #import "LRMResultSet.h"
 #import "LRMRow.h"
+#import "LRMTransaction.h"

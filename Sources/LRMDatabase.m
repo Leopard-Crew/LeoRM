@@ -8,6 +8,7 @@
 #import "LRMDatabase.h"
 #import "LRMError.h"
 #import "LRMStatement.h"
+#import "LRMTransaction.h"
 
 #import <sqlite3.h>
 
@@ -108,6 +109,20 @@
                                               sql:sql
                                      databasePath:_path
                                             error:error] autorelease];
+}
+
+- (LRMTransaction *)beginTransaction:(NSError **)error
+{
+    if (_database == NULL) {
+        if (error != NULL) {
+            *error = LRMErrorMake(LRMErrorInvalidArgument, @"Database must be open before beginning a transaction.");
+        }
+
+        return nil;
+    }
+
+    return [[[LRMTransaction alloc] initWithDatabase:self
+                                              error:error] autorelease];
 }
 
 @end

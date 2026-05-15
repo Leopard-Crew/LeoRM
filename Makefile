@@ -8,8 +8,8 @@ SDKROOT ?= /Developer/SDKs/MacOSX10.5.sdk
 ARCH ?= ppc
 
 BUILD_DIR = Build
-SOURCES = Sources/LRMError.m Sources/LRMDatabase.m Sources/LRMStatement.m Sources/LRMResultSet.m Sources/LRMRow.m
-OBJECTS = $(BUILD_DIR)/LRMError.o $(BUILD_DIR)/LRMDatabase.o $(BUILD_DIR)/LRMStatement.o $(BUILD_DIR)/LRMResultSet.o $(BUILD_DIR)/LRMRow.o
+SOURCES = Sources/LRMError.m Sources/LRMDatabase.m Sources/LRMStatement.m Sources/LRMResultSet.m Sources/LRMRow.m Sources/LRMTransaction.m
+OBJECTS = $(BUILD_DIR)/LRMError.o $(BUILD_DIR)/LRMDatabase.o $(BUILD_DIR)/LRMStatement.o $(BUILD_DIR)/LRMResultSet.o $(BUILD_DIR)/LRMRow.o $(BUILD_DIR)/LRMTransaction.o
 
 CFLAGS = -isysroot $(SDKROOT) -mmacosx-version-min=10.5 -arch $(ARCH) -Wall -Wextra
 OBJCFLAGS = $(CFLAGS)
@@ -18,7 +18,7 @@ LIBS = -framework Foundation -lsqlite3
 
 .PHONY: all clean smoke
 
-all: $(BUILD_DIR)/libLeoRM.a $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke
+all: $(BUILD_DIR)/libLeoRM.a $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
@@ -38,6 +38,9 @@ $(BUILD_DIR)/LRMResultSet.o: Sources/LRMResultSet.m Sources/LRMResultSet.h Sourc
 $(BUILD_DIR)/LRMRow.o: Sources/LRMRow.m Sources/LRMRow.h | $(BUILD_DIR)
 	$(CC) $(OBJCFLAGS) -c Sources/LRMRow.m -o $@
 
+$(BUILD_DIR)/LRMTransaction.o: Sources/LRMTransaction.m Sources/LRMTransaction.h Sources/LRMDatabase.h Sources/LRMStatement.h Sources/LRMError.h | $(BUILD_DIR)
+	$(CC) $(OBJCFLAGS) -c Sources/LRMTransaction.m -o $@
+
 $(BUILD_DIR)/libLeoRM.a: $(OBJECTS)
 	libtool -static -o $@ $(OBJECTS)
 
@@ -53,11 +56,15 @@ $(BUILD_DIR)/lrm-statement-smoke: Tests/statement_main.m $(BUILD_DIR)/libLeoRM.a
 $(BUILD_DIR)/lrm-query-smoke: Tests/query_main.m $(BUILD_DIR)/libLeoRM.a
 	$(CC) $(OBJCFLAGS) Tests/query_main.m $(BUILD_DIR)/libLeoRM.a $(LIBS) -o $@
 
-smoke: $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke
+$(BUILD_DIR)/lrm-transaction-smoke: Tests/transaction_main.m $(BUILD_DIR)/libLeoRM.a
+	$(CC) $(OBJCFLAGS) Tests/transaction_main.m $(BUILD_DIR)/libLeoRM.a $(LIBS) -o $@
+
+smoke: $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke
 	$(BUILD_DIR)/lrm-smoke
 	$(BUILD_DIR)/lrm-error-smoke
 	$(BUILD_DIR)/lrm-statement-smoke
 	$(BUILD_DIR)/lrm-query-smoke
+	$(BUILD_DIR)/lrm-transaction-smoke
 
 clean:
 	rm -rf $(BUILD_DIR)
