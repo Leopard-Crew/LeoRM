@@ -31,4 +31,17 @@ struct sqlite3;
 - (LRMStatement *)prepareStatement:(NSString *)sql error:(NSError **)error;
 - (LRMTransaction *)beginTransaction:(NSError **)error;
 
+- (BOOL)ensureMetadataTable:(NSError **)error;
+
+- (NSString *)metadataValueForKey:(NSString *)key error:(NSError **)error;
+- (BOOL)setMetadataValue:(NSString *)value forKey:(NSString *)key error:(NSError **)error;
+
+- (BOOL)getSchemaVersion:(NSInteger *)version
+           forSchemaName:(NSString *)schemaName
+                   error:(NSError **)error;
+
+- (BOOL)setSchemaVersion:(NSInteger)version
+           forSchemaName:(NSString *)schemaName
+                   error:(NSError **)error;
+
 @end

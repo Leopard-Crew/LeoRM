@@ -18,7 +18,7 @@ LIBS = -framework Foundation -lsqlite3
 
 .PHONY: all clean smoke
 
-all: $(BUILD_DIR)/libLeoRM.a $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke
+all: $(BUILD_DIR)/libLeoRM.a $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke $(BUILD_DIR)/lrm-metadata-smoke
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
@@ -59,12 +59,16 @@ $(BUILD_DIR)/lrm-query-smoke: Tests/query_main.m $(BUILD_DIR)/libLeoRM.a
 $(BUILD_DIR)/lrm-transaction-smoke: Tests/transaction_main.m $(BUILD_DIR)/libLeoRM.a
 	$(CC) $(OBJCFLAGS) Tests/transaction_main.m $(BUILD_DIR)/libLeoRM.a $(LIBS) -o $@
 
-smoke: $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke
+$(BUILD_DIR)/lrm-metadata-smoke: Tests/metadata_main.m $(BUILD_DIR)/libLeoRM.a
+	$(CC) $(OBJCFLAGS) Tests/metadata_main.m $(BUILD_DIR)/libLeoRM.a $(LIBS) -o $@
+
+smoke: $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke $(BUILD_DIR)/lrm-metadata-smoke
 	$(BUILD_DIR)/lrm-smoke
 	$(BUILD_DIR)/lrm-error-smoke
 	$(BUILD_DIR)/lrm-statement-smoke
 	$(BUILD_DIR)/lrm-query-smoke
 	$(BUILD_DIR)/lrm-transaction-smoke
+	$(BUILD_DIR)/lrm-metadata-smoke
 
 clean:
 	rm -rf $(BUILD_DIR)
