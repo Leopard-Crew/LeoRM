@@ -7,6 +7,8 @@
 
 #import <Foundation/Foundation.h>
 
+struct sqlite3;
+
 @interface LRMDatabase : NSObject
 {
 @private

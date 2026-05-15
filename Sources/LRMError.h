@@ -7,6 +7,8 @@
 
 #import <Foundation/Foundation.h>
 
+struct sqlite3;
+
 extern NSString * const LRMErrorDomain;
 
 extern NSString * const LRMErrorSQLiteCodeKey;
