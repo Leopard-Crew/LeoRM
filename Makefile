@@ -16,9 +16,9 @@ OBJCFLAGS = $(CFLAGS)
 LDFLAGS = -isysroot $(SDKROOT) -mmacosx-version-min=10.5 -arch $(ARCH)
 LIBS = -framework Foundation -lsqlite3
 
-.PHONY: all clean smoke apidocs clean-docs
+.PHONY: all clean smoke apidocs clean-docs leaks-check
 
-all: $(BUILD_DIR)/libLeoRM.a $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke $(BUILD_DIR)/lrm-metadata-smoke $(BUILD_DIR)/lrm-migration-smoke $(BUILD_DIR)/lrm-repository-smoke $(BUILD_DIR)/lrm-notes-example $(BUILD_DIR)/lrm-failure-paths-smoke $(BUILD_DIR)/lrm-constraint-errors-smoke $(BUILD_DIR)/lrm-migration-rollback-smoke $(BUILD_DIR)/lrm-edge-cases-smoke $(BUILD_DIR)/lrm-file-database-smoke
+all: $(BUILD_DIR)/libLeoRM.a $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke $(BUILD_DIR)/lrm-metadata-smoke $(BUILD_DIR)/lrm-migration-smoke $(BUILD_DIR)/lrm-repository-smoke $(BUILD_DIR)/lrm-notes-example $(BUILD_DIR)/lrm-failure-paths-smoke $(BUILD_DIR)/lrm-constraint-errors-smoke $(BUILD_DIR)/lrm-migration-rollback-smoke $(BUILD_DIR)/lrm-edge-cases-smoke $(BUILD_DIR)/lrm-file-database-smoke $(BUILD_DIR)/lrm-leaks-target
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
@@ -119,6 +119,12 @@ smoke: $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-stat
 	$(BUILD_DIR)/lrm-migration-rollback-smoke
 	$(BUILD_DIR)/lrm-edge-cases-smoke
 	$(BUILD_DIR)/lrm-file-database-smoke
+
+$(BUILD_DIR)/lrm-leaks-target: Tests/leaks_main.m $(BUILD_DIR)/libLeoRM.a
+	$(CC) $(OBJCFLAGS) Tests/leaks_main.m $(BUILD_DIR)/libLeoRM.a $(LIBS) -o $@
+
+leaks-check: $(BUILD_DIR)/lrm-leaks-target
+	Tools/run_leaks_check.sh
 
 apidocs:
 	Tools/build_headerdoc.sh
