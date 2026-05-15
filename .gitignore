@@ -1,71 +1,143 @@
-# Prerequisites
-*.d
+# LeoRM .gitignore
+#
+# Rule:
+# Ignore generated files, local editor state, and build products.
+# Do not ignore project source files, documentation, Makefiles, Xcode projects,
+# or deliberately maintained Leopard-Crew project assets.
 
-# Compiled Object files
-*.slo
-*.lo
+# ---------------------------------------------------------------------------
+# macOS / Finder local files
+# ---------------------------------------------------------------------------
+
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ---------------------------------------------------------------------------
+# Editor / temporary files
+# ---------------------------------------------------------------------------
+
+*~
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*.orig
+*.rej
+
+# ---------------------------------------------------------------------------
+# Logs
+# ---------------------------------------------------------------------------
+
+*.log
+
+# ---------------------------------------------------------------------------
+# Build directories
+#
+# These are anchored to the repository root on purpose.
+# Do not use unanchored build-* patterns, because they also match paths such as:
+# docs/build-notes/
+# ---------------------------------------------------------------------------
+
+/Build/
+/build/
+/build-*/
+/DerivedData/
+
+# ---------------------------------------------------------------------------
+# Compiler dependency and object files
+# ---------------------------------------------------------------------------
+
+*.d
 *.o
 *.obj
+*.lo
+*.slo
 
-# Precompiled Headers
+# ---------------------------------------------------------------------------
+# Generated precompiled-header artifacts
+#
+# Do not ignore *.pch.
+# In Xcode projects, .pch files may be maintained source files.
+# ---------------------------------------------------------------------------
+
 *.gch
-*.pch
 
-# Linker files
-*.ilk
+# ---------------------------------------------------------------------------
+# Libraries and linker outputs
+# ---------------------------------------------------------------------------
 
-# Debugger Files
-*.pdb
-
-# Compiled Dynamic libraries
+*.a
+*.la
+*.lai
+*.lib
 *.so
+*.so.*
 *.dylib
 *.dll
-*.so.*
+*.ilk
 
+# ---------------------------------------------------------------------------
+# Executables and application build products
+# ---------------------------------------------------------------------------
 
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
 *.exe
 *.out
 *.app
 
-# Build directories
-build/
-Build/
-build-*/
+# ---------------------------------------------------------------------------
+# Debug information
+# ---------------------------------------------------------------------------
 
+*.pdb
+*.dSYM/
+*.dwo
+
+# ---------------------------------------------------------------------------
+# Xcode local user state
+#
+# Keep .xcodeproj project files trackable.
+# Ignore only user-local state.
+# ---------------------------------------------------------------------------
+
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+xcuserdata/
+*.xcuserstate
+
+# ---------------------------------------------------------------------------
 # CMake generated files
+#
+# LeoRM does not currently use CMake as its primary build path.
+# If CMake is used experimentally, generated files should stay out of source.
+# Project Makefiles are source files in Leopard-Crew projects and must remain
+# trackable.
+# ---------------------------------------------------------------------------
+
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
 install_manifest.txt
 compile_commands.json
 
-# Project Makefiles are source files in Leopard-Crew projects.
-# CMake-generated Makefiles should live in ignored build directories.
+# ---------------------------------------------------------------------------
+# Test runtime output
+# ---------------------------------------------------------------------------
 
-# Temporary files
-*.tmp
-*.log
-*.bak
-*.swp
-
-# vcpkg
-vcpkg_installed/
-
-# debug information files
-*.dwo
-
-# test output & cache
-Testing/
+/test.sqlite
+/test.sqlite-journal
+/test.sqlite-wal
+/test.sqlite-shm
+/Tests/tmp/
+/Testing/
 .cache/
+
+# ---------------------------------------------------------------------------
+# Package-manager / external build caches
+# ---------------------------------------------------------------------------
+
+vcpkg_installed/
