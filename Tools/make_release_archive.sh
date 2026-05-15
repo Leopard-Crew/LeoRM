@@ -123,13 +123,38 @@ MANIFEST
     tar -czf "$ARCHIVE_PATH" "$ARCHIVE_ROOT"
 )
 
+require_archive_entry()
+{
+    entry="$1"
+
+    if ! tar -tzf "$ARCHIVE_PATH" | grep -F "$entry" >/dev/null 2>&1; then
+        echo "error: release archive is missing required entry: $entry" >&2
+        exit 1
+    fi
+}
+
+require_archive_entry "$ARCHIVE_ROOT/README.md"
+require_archive_entry "$ARCHIVE_ROOT/Makefile"
+require_archive_entry "$ARCHIVE_ROOT/Sources/LeoRM.h"
+require_archive_entry "$ARCHIVE_ROOT/Sources/LRMDatabase.m"
+require_archive_entry "$ARCHIVE_ROOT/Sources/LRMStatement.m"
+require_archive_entry "$ARCHIVE_ROOT/Tests/smoke_main.m"
+require_archive_entry "$ARCHIVE_ROOT/Examples/NotesStore/main.m"
+require_archive_entry "$ARCHIVE_ROOT/Tools/build_headerdoc.sh"
+require_archive_entry "$ARCHIVE_ROOT/Tools/make_release_archive.sh"
+require_archive_entry "$ARCHIVE_ROOT/Documentation/HeaderDoc/LeoRM/index.html"
+require_archive_entry "$ARCHIVE_ROOT/RELEASE-MANIFEST.txt"
+
 echo "Release staging directory:"
 echo "  $STAGING_DIR"
 
 echo "Release archive:"
 echo "  $ARCHIVE_PATH"
 
-echo "Archive contents preview:"
-tar -tzf "$ARCHIVE_PATH" | head -40
+echo "Archive source contents preview:"
+tar -tzf "$ARCHIVE_PATH" | grep -E "/(Sources|Tests|Examples|Tools)/|/(README.md|Makefile|RELEASE-MANIFEST.txt)$" | head -80
+
+echo "Archive documentation preview:"
+tar -tzf "$ARCHIVE_PATH" | grep "/Documentation/HeaderDoc/" | head -40
 
 echo "LeoRM release archive build OK"
