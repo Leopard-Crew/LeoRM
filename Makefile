@@ -8,8 +8,8 @@ SDKROOT ?= /Developer/SDKs/MacOSX10.5.sdk
 ARCH ?= ppc
 
 BUILD_DIR = Build
-SOURCES = Sources/LRMError.m Sources/LRMDatabase.m
-OBJECTS = $(BUILD_DIR)/LRMError.o $(BUILD_DIR)/LRMDatabase.o
+SOURCES = Sources/LRMError.m Sources/LRMDatabase.m Sources/LRMStatement.m
+OBJECTS = $(BUILD_DIR)/LRMError.o $(BUILD_DIR)/LRMDatabase.o $(BUILD_DIR)/LRMStatement.o
 
 CFLAGS = -isysroot $(SDKROOT) -mmacosx-version-min=10.5 -arch $(ARCH) -Wall -Wextra
 OBJCFLAGS = $(CFLAGS)
@@ -18,7 +18,7 @@ LIBS = -framework Foundation -lsqlite3
 
 .PHONY: all clean smoke
 
-all: $(BUILD_DIR)/libLeoRM.a $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke
+all: $(BUILD_DIR)/libLeoRM.a $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
@@ -29,6 +29,9 @@ $(BUILD_DIR)/LRMError.o: Sources/LRMError.m Sources/LRMError.h | $(BUILD_DIR)
 $(BUILD_DIR)/LRMDatabase.o: Sources/LRMDatabase.m Sources/LRMDatabase.h Sources/LRMError.h | $(BUILD_DIR)
 	$(CC) $(OBJCFLAGS) -c Sources/LRMDatabase.m -o $@
 
+$(BUILD_DIR)/LRMStatement.o: Sources/LRMStatement.m Sources/LRMStatement.h Sources/LRMError.h | $(BUILD_DIR)
+	$(CC) $(OBJCFLAGS) -c Sources/LRMStatement.m -o $@
+
 $(BUILD_DIR)/libLeoRM.a: $(OBJECTS)
 	libtool -static -o $@ $(OBJECTS)
 
@@ -38,9 +41,13 @@ $(BUILD_DIR)/lrm-smoke: Tests/smoke_main.m $(BUILD_DIR)/libLeoRM.a
 $(BUILD_DIR)/lrm-error-smoke: Tests/error_main.m $(BUILD_DIR)/libLeoRM.a
 	$(CC) $(OBJCFLAGS) Tests/error_main.m $(BUILD_DIR)/libLeoRM.a $(LIBS) -o $@
 
-smoke: $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke
+$(BUILD_DIR)/lrm-statement-smoke: Tests/statement_main.m $(BUILD_DIR)/libLeoRM.a
+	$(CC) $(OBJCFLAGS) Tests/statement_main.m $(BUILD_DIR)/libLeoRM.a $(LIBS) -o $@
+
+smoke: $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke
 	$(BUILD_DIR)/lrm-smoke
 	$(BUILD_DIR)/lrm-error-smoke
+	$(BUILD_DIR)/lrm-statement-smoke
 
 clean:
 	rm -rf $(BUILD_DIR)

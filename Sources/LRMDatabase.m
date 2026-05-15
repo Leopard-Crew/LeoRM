@@ -7,6 +7,7 @@
 
 #import "LRMDatabase.h"
 #import "LRMError.h"
+#import "LRMStatement.h"
 
 #import <sqlite3.h>
 
@@ -82,14 +83,31 @@
 - (void)close
 {
     if (_database != NULL) {
-        sqlite3_close(_database);
-        _database = NULL;
+        if (sqlite3_close(_database) == SQLITE_OK) {
+            _database = NULL;
+        }
     }
 }
 
 - (BOOL)isOpen
 {
     return (_database != NULL);
+}
+
+- (LRMStatement *)prepareStatement:(NSString *)sql error:(NSError **)error
+{
+    if (_database == NULL) {
+        if (error != NULL) {
+            *error = LRMErrorMake(LRMErrorInvalidArgument, @"Database must be open before preparing a statement.");
+        }
+
+        return nil;
+    }
+
+    return [[[LRMStatement alloc] initWithDatabase:_database
+                                              sql:sql
+                                     databasePath:_path
+                                            error:error] autorelease];
 }
 
 @end

@@ -9,6 +9,8 @@
 
 struct sqlite3;
 
+@class LRMStatement;
+
 @interface LRMDatabase : NSObject
 {
 @private
@@ -24,5 +26,7 @@ struct sqlite3;
 - (BOOL)open:(NSError **)error;
 - (void)close;
 - (BOOL)isOpen;
+
+- (LRMStatement *)prepareStatement:(NSString *)sql error:(NSError **)error;
 
 @end
