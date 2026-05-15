@@ -18,7 +18,7 @@ LIBS = -framework Foundation -lsqlite3
 
 .PHONY: all clean smoke
 
-all: $(BUILD_DIR)/libLeoRM.a $(BUILD_DIR)/lrm-smoke
+all: $(BUILD_DIR)/libLeoRM.a $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
@@ -35,8 +35,12 @@ $(BUILD_DIR)/libLeoRM.a: $(OBJECTS)
 $(BUILD_DIR)/lrm-smoke: Tests/smoke_main.m $(BUILD_DIR)/libLeoRM.a
 	$(CC) $(OBJCFLAGS) Tests/smoke_main.m $(BUILD_DIR)/libLeoRM.a $(LIBS) -o $@
 
-smoke: $(BUILD_DIR)/lrm-smoke
+$(BUILD_DIR)/lrm-error-smoke: Tests/error_main.m $(BUILD_DIR)/libLeoRM.a
+	$(CC) $(OBJCFLAGS) Tests/error_main.m $(BUILD_DIR)/libLeoRM.a $(LIBS) -o $@
+
+smoke: $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke
 	$(BUILD_DIR)/lrm-smoke
+	$(BUILD_DIR)/lrm-error-smoke
 
 clean:
 	rm -rf $(BUILD_DIR)
