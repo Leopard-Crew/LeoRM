@@ -7,15 +7,13 @@
 
 #import <Foundation/Foundation.h>
 
-struct sqlite3_stmt;
-
 @interface LRMRow : NSObject
 {
 @private
-    struct sqlite3_stmt *_statement;
+    void *_statement;
 }
 
-- (id)initWithStatement:(struct sqlite3_stmt *)statement;
+- (id)initWithStatement:(void *)statement;
 
 - (NSInteger)columnCount;
 - (NSString *)columnNameAtIndex:(NSInteger)index;

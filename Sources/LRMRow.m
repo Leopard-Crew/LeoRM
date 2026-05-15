@@ -12,7 +12,7 @@
 
 @implementation LRMRow
 
-- (id)initWithStatement:(struct sqlite3_stmt *)statement
+- (id)initWithStatement:(void *)statement
 {
     self = [super init];
     if (self == nil) {
@@ -30,7 +30,7 @@
         return 0;
     }
 
-    return (NSInteger)sqlite3_column_count(_statement);
+    return (NSInteger)sqlite3_column_count((sqlite3_stmt *)_statement);
 }
 
 - (NSString *)columnNameAtIndex:(NSInteger)index
@@ -41,7 +41,7 @@
         return nil;
     }
 
-    name = sqlite3_column_name(_statement, (int)index);
+    name = sqlite3_column_name((sqlite3_stmt *)_statement, (int)index);
 
     if (name == NULL) {
         return nil;
@@ -81,25 +81,25 @@
         return nil;
     }
 
-    type = sqlite3_column_type(_statement, (int)index);
+    type = sqlite3_column_type((sqlite3_stmt *)_statement, (int)index);
 
     switch (type) {
         case SQLITE_TEXT:
-            text = sqlite3_column_text(_statement, (int)index);
+            text = sqlite3_column_text((sqlite3_stmt *)_statement, (int)index);
             if (text == NULL) {
                 return nil;
             }
             return [NSString stringWithUTF8String:(const char *)text];
 
         case SQLITE_INTEGER:
-            return [NSNumber numberWithLongLong:(long long)sqlite3_column_int64(_statement, (int)index)];
+            return [NSNumber numberWithLongLong:(long long)sqlite3_column_int64((sqlite3_stmt *)_statement, (int)index)];
 
         case SQLITE_FLOAT:
-            return [NSNumber numberWithDouble:sqlite3_column_double(_statement, (int)index)];
+            return [NSNumber numberWithDouble:sqlite3_column_double((sqlite3_stmt *)_statement, (int)index)];
 
         case SQLITE_BLOB:
-            bytes = sqlite3_column_blob(_statement, (int)index);
-            length = sqlite3_column_bytes(_statement, (int)index);
+            bytes = sqlite3_column_blob((sqlite3_stmt *)_statement, (int)index);
+            length = sqlite3_column_bytes((sqlite3_stmt *)_statement, (int)index);
 
             if (bytes == NULL || length <= 0) {
                 return [NSData data];
@@ -200,7 +200,7 @@
         return YES;
     }
 
-    return (sqlite3_column_type(_statement, (int)index) == SQLITE_NULL);
+    return (sqlite3_column_type((sqlite3_stmt *)_statement, (int)index) == SQLITE_NULL);
 }
 
 - (BOOL)isNullForColumn:(NSString *)name
