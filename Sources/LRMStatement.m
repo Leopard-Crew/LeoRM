@@ -7,6 +7,7 @@
 
 #import "LRMStatement.h"
 #import "LRMError.h"
+#import "LRMResultSet.h"
 
 #import <sqlite3.h>
 #import <string.h>
@@ -79,6 +80,21 @@
 - (NSString *)sql
 {
     return _sql;
+}
+
+- (NSString *)databasePath
+{
+    return _databasePath;
+}
+
+- (struct sqlite3 *)sqliteDatabase
+{
+    return _database;
+}
+
+- (struct sqlite3_stmt *)sqliteStatement
+{
+    return _statement;
 }
 
 - (BOOL)bindObject:(id)value atIndex:(NSInteger)index error:(NSError **)error
@@ -173,6 +189,19 @@
     }
 
     return YES;
+}
+
+- (LRMResultSet *)executeQuery:(NSError **)error
+{
+    if (_statement == NULL) {
+        if (error != NULL) {
+            *error = LRMErrorMake(LRMErrorInvalidArgument, @"Cannot execute a finalized statement.");
+        }
+
+        return nil;
+    }
+
+    return [[[LRMResultSet alloc] initWithStatement:self] autorelease];
 }
 
 - (void)reset

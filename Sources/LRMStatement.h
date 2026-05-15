@@ -10,6 +10,8 @@
 struct sqlite3;
 struct sqlite3_stmt;
 
+@class LRMResultSet;
+
 @interface LRMStatement : NSObject
 {
 @private
@@ -25,9 +27,14 @@ struct sqlite3_stmt;
                  error:(NSError **)error;
 
 - (NSString *)sql;
+- (NSString *)databasePath;
+
+- (struct sqlite3 *)sqliteDatabase;
+- (struct sqlite3_stmt *)sqliteStatement;
 
 - (BOOL)bindObject:(id)value atIndex:(NSInteger)index error:(NSError **)error;
 - (BOOL)executeUpdate:(NSError **)error;
+- (LRMResultSet *)executeQuery:(NSError **)error;
 
 - (void)reset;
 - (void)finalizeStatement;

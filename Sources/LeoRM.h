@@ -10,3 +10,5 @@
 #import "LRMError.h"
 #import "LRMDatabase.h"
 #import "LRMStatement.h"
+#import "LRMResultSet.h"
+#import "LRMRow.h"
