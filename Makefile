@@ -18,7 +18,7 @@ LIBS = -framework Foundation -lsqlite3
 
 .PHONY: all clean smoke apidocs clean-docs
 
-all: $(BUILD_DIR)/libLeoRM.a $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke $(BUILD_DIR)/lrm-metadata-smoke $(BUILD_DIR)/lrm-migration-smoke $(BUILD_DIR)/lrm-repository-smoke $(BUILD_DIR)/lrm-notes-example $(BUILD_DIR)/lrm-failure-paths-smoke $(BUILD_DIR)/lrm-constraint-errors-smoke
+all: $(BUILD_DIR)/libLeoRM.a $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke $(BUILD_DIR)/lrm-metadata-smoke $(BUILD_DIR)/lrm-migration-smoke $(BUILD_DIR)/lrm-repository-smoke $(BUILD_DIR)/lrm-notes-example $(BUILD_DIR)/lrm-failure-paths-smoke $(BUILD_DIR)/lrm-constraint-errors-smoke $(BUILD_DIR)/lrm-migration-rollback-smoke
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
@@ -95,7 +95,10 @@ $(BUILD_DIR)/lrm-failure-paths-smoke: Tests/failure_paths_main.m $(BUILD_DIR)/li
 $(BUILD_DIR)/lrm-constraint-errors-smoke: Tests/constraint_errors_main.m $(BUILD_DIR)/libLeoRM.a
 	$(CC) $(OBJCFLAGS) Tests/constraint_errors_main.m $(BUILD_DIR)/libLeoRM.a $(LIBS) -o $@
 
-smoke: $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke $(BUILD_DIR)/lrm-metadata-smoke $(BUILD_DIR)/lrm-migration-smoke $(BUILD_DIR)/lrm-repository-smoke $(BUILD_DIR)/lrm-notes-example $(BUILD_DIR)/lrm-failure-paths-smoke $(BUILD_DIR)/lrm-constraint-errors-smoke
+$(BUILD_DIR)/lrm-migration-rollback-smoke: Tests/migration_rollback_main.m $(BUILD_DIR)/libLeoRM.a
+	$(CC) $(OBJCFLAGS) Tests/migration_rollback_main.m $(BUILD_DIR)/libLeoRM.a $(LIBS) -o $@
+
+smoke: $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke $(BUILD_DIR)/lrm-metadata-smoke $(BUILD_DIR)/lrm-migration-smoke $(BUILD_DIR)/lrm-repository-smoke $(BUILD_DIR)/lrm-notes-example $(BUILD_DIR)/lrm-failure-paths-smoke $(BUILD_DIR)/lrm-constraint-errors-smoke $(BUILD_DIR)/lrm-migration-rollback-smoke
 	$(BUILD_DIR)/lrm-smoke
 	$(BUILD_DIR)/lrm-error-smoke
 	$(BUILD_DIR)/lrm-statement-smoke
@@ -107,6 +110,7 @@ smoke: $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-stat
 	$(BUILD_DIR)/lrm-notes-example
 	$(BUILD_DIR)/lrm-failure-paths-smoke
 	$(BUILD_DIR)/lrm-constraint-errors-smoke
+	$(BUILD_DIR)/lrm-migration-rollback-smoke
 
 apidocs:
 	Tools/build_headerdoc.sh
