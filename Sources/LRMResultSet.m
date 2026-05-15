@@ -49,7 +49,7 @@
     result = sqlite3_step([_statement sqliteStatement]);
 
     if (result == SQLITE_ROW) {
-        _currentRow = [[LRMRow alloc] initWithStatement:[_statement sqliteStatement]];
+        _currentRow = [[LRMRow alloc] initWithStatement:(void *)[_statement sqliteStatement]];
         return YES;
     }
 
