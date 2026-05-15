@@ -8,6 +8,15 @@
 #import <Foundation/Foundation.h>
 
 /*!
+ * @header LRMRow
+ * @abstract Public result-row access API for LeoRM.
+ * @discussion
+ * This header is part of LeoRM's public API surface. It follows the
+ * Cupertino-2009 API culture documented in docs/quality and is intended to be
+ * processed by Apple's HeaderDoc tools on Mac OS X 10.5.8 Leopard.
+ */
+
+/*!
  * @class LRMRow
  * @abstract Foundation-shaped access to the current SQLite result row.
  * @discussion

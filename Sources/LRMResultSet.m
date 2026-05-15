@@ -8,6 +8,7 @@
 #import "LRMResultSet.h"
 #import "LRMRow.h"
 #import "LRMStatement.h"
+#import "Private/LRMStatementPrivate.h"
 #import "LRMError.h"
 
 #import <sqlite3.h>
