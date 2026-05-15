@@ -8,12 +8,6 @@
 #import <Foundation/Foundation.h>
 #import "../Sources/LeoRM.h"
 
-static int fail(NSString *message)
-{
-    fprintf(stderr, "%s\n", [message UTF8String]);
-    return 1;
-}
-
 static BOOL errorLooksLikeSQLiteFailure(NSError *error)
 {
     if (error == nil) {
