@@ -7,8 +7,14 @@
 
 #import <Foundation/Foundation.h>
 
-struct sqlite3;
-struct sqlite3_stmt;
+/*!
+ * @header LRMStatement
+ * @abstract Public prepared-statement API for LeoRM.
+ * @discussion
+ * This header is part of LeoRM's public API surface. It follows the
+ * Cupertino-2009 API culture documented in docs/quality and is intended to be
+ * processed by Apple's HeaderDoc tools on Mac OS X 10.5.8 Leopard.
+ */
 
 @class LRMResultSet;
 
@@ -31,30 +37,11 @@ struct sqlite3_stmt;
 @interface LRMStatement : NSObject
 {
 @private
-    struct sqlite3 *_database;
-    struct sqlite3_stmt *_statement;
+    void *_database;
+    void *_statement;
     NSString *_sql;
     NSString *_databasePath;
 }
-
-/*!
- * @method initWithDatabase:sql:databasePath:error:
- * @abstract Prepares SQL against an open SQLite database handle.
- * @param database Open SQLite database handle. Must not be NULL.
- * @param sql SQL string to prepare. Must not be nil or empty.
- * @param databasePath Optional database path used for error context.
- * @param error Optional NSError output. Filled on invalid input or SQLite
- * prepare failure.
- * @result Returns an owned LRMStatement, or nil on failure.
- * @discussion
- * The statement retains the SQL and database path strings, but it does not own
- * the SQLite database handle itself. The database must remain open while the
- * statement is used.
- */
-- (id)initWithDatabase:(struct sqlite3 *)database
-                   sql:(NSString *)sql
-          databasePath:(NSString *)databasePath
-                 error:(NSError **)error;
 
 /*!
  * @method sql
@@ -62,34 +49,6 @@ struct sqlite3_stmt;
  * @result Returns the SQL string. The caller does not own the returned object.
  */
 - (NSString *)sql;
-
-/*!
- * @method databasePath
- * @abstract Returns the database path associated with this statement.
- * @result Returns the database path, or nil if none was provided. The caller
- * does not own the returned object.
- */
-- (NSString *)databasePath;
-
-/*!
- * @method sqliteDatabase
- * @abstract Returns the underlying SQLite database handle.
- * @result Returns the sqlite3 handle used by this statement.
- * @discussion
- * This is exposed for LeoRM internals such as LRMResultSet error reporting.
- * Callers should not close this handle.
- */
-- (struct sqlite3 *)sqliteDatabase;
-
-/*!
- * @method sqliteStatement
- * @abstract Returns the underlying prepared SQLite statement handle.
- * @result Returns the sqlite3_stmt handle, or NULL after finalization.
- * @discussion
- * This is exposed for LeoRM internals such as LRMResultSet and LRMRow. Callers
- * should not step, reset, or finalize this handle directly.
- */
-- (struct sqlite3_stmt *)sqliteStatement;
 
 /*!
  * @method bindObject:atIndex:error:

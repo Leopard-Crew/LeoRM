@@ -8,6 +8,7 @@
 #import "LRMDatabase.h"
 #import "LRMError.h"
 #import "LRMStatement.h"
+#import "Private/LRMStatementPrivate.h"
 #import "LRMTransaction.h"
 #import "LRMResultSet.h"
 #import "LRMRow.h"

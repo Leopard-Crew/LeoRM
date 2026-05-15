@@ -26,13 +26,13 @@ $(BUILD_DIR):
 $(BUILD_DIR)/LRMError.o: Sources/LRMError.m Sources/LRMError.h | $(BUILD_DIR)
 	$(CC) $(OBJCFLAGS) -c Sources/LRMError.m -o $@
 
-$(BUILD_DIR)/LRMDatabase.o: Sources/LRMDatabase.m Sources/LRMDatabase.h Sources/LRMError.h | $(BUILD_DIR)
+$(BUILD_DIR)/LRMDatabase.o: Sources/LRMDatabase.m Sources/LRMDatabase.h Sources/LRMStatement.h Sources/Private/LRMStatementPrivate.h Sources/LRMError.h | $(BUILD_DIR)
 	$(CC) $(OBJCFLAGS) -c Sources/LRMDatabase.m -o $@
 
-$(BUILD_DIR)/LRMStatement.o: Sources/LRMStatement.m Sources/LRMStatement.h Sources/LRMError.h | $(BUILD_DIR)
+$(BUILD_DIR)/LRMStatement.o: Sources/LRMStatement.m Sources/LRMStatement.h Sources/Private/LRMStatementPrivate.h Sources/LRMError.h | $(BUILD_DIR)
 	$(CC) $(OBJCFLAGS) -c Sources/LRMStatement.m -o $@
 
-$(BUILD_DIR)/LRMResultSet.o: Sources/LRMResultSet.m Sources/LRMResultSet.h Sources/LRMRow.h Sources/LRMStatement.h Sources/LRMError.h | $(BUILD_DIR)
+$(BUILD_DIR)/LRMResultSet.o: Sources/LRMResultSet.m Sources/LRMResultSet.h Sources/LRMRow.h Sources/LRMStatement.h Sources/Private/LRMStatementPrivate.h Sources/LRMError.h | $(BUILD_DIR)
 	$(CC) $(OBJCFLAGS) -c Sources/LRMResultSet.m -o $@
 
 $(BUILD_DIR)/LRMRow.o: Sources/LRMRow.m Sources/LRMRow.h | $(BUILD_DIR)

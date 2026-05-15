@@ -6,6 +6,7 @@
 //
 
 #import "LRMStatement.h"
+#import "Private/LRMStatementPrivate.h"
 #import "LRMError.h"
 #import "LRMResultSet.h"
 
@@ -49,15 +50,19 @@
     _databasePath = [databasePath copy];
     _statement = NULL;
 
-    result = sqlite3_prepare_v2(_database,
+    sqlite3_stmt *preparedStatement = NULL;
+
+    result = sqlite3_prepare_v2((sqlite3 *)_database,
                                 [_sql UTF8String],
                                 -1,
-                                &_statement,
+                                &preparedStatement,
                                 NULL);
+
+    _statement = preparedStatement;
 
     if (result != SQLITE_OK) {
         if (error != NULL) {
-            *error = LRMSQLiteErrorMake(_database, result, _sql, _databasePath);
+            *error = LRMSQLiteErrorMake((sqlite3 *)_database, result, _sql, _databasePath);
         }
 
         [self release];
@@ -89,12 +94,12 @@
 
 - (struct sqlite3 *)sqliteDatabase
 {
-    return _database;
+    return (sqlite3 *)_database;
 }
 
 - (struct sqlite3_stmt *)sqliteStatement
 {
-    return _statement;
+    return (sqlite3_stmt *)_statement;
 }
 
 - (BOOL)bindObject:(id)value atIndex:(NSInteger)index error:(NSError **)error
@@ -118,9 +123,9 @@
     }
 
     if (value == nil || value == [NSNull null]) {
-        result = sqlite3_bind_null(_statement, (int)index);
+        result = sqlite3_bind_null((sqlite3_stmt *)_statement, (int)index);
     } else if ([value isKindOfClass:[NSString class]]) {
-        result = sqlite3_bind_text(_statement,
+        result = sqlite3_bind_text((sqlite3_stmt *)_statement,
                                    (int)index,
                                    [value UTF8String],
                                    -1,
@@ -131,16 +136,16 @@
         if (type != NULL &&
             (strcmp(type, @encode(float)) == 0 ||
              strcmp(type, @encode(double)) == 0)) {
-            result = sqlite3_bind_double(_statement,
+            result = sqlite3_bind_double((sqlite3_stmt *)_statement,
                                          (int)index,
                                          [value doubleValue]);
         } else {
-            result = sqlite3_bind_int64(_statement,
+            result = sqlite3_bind_int64((sqlite3_stmt *)_statement,
                                         (int)index,
                                         (long long)[value longLongValue]);
         }
     } else if ([value isKindOfClass:[NSData class]]) {
-        result = sqlite3_bind_blob(_statement,
+        result = sqlite3_bind_blob((sqlite3_stmt *)_statement,
                                    (int)index,
                                    [value bytes],
                                    (int)[value length],
@@ -157,7 +162,7 @@
 
     if (result != SQLITE_OK) {
         if (error != NULL) {
-            *error = LRMSQLiteErrorMake(_database, result, _sql, _databasePath);
+            *error = LRMSQLiteErrorMake((sqlite3 *)_database, result, _sql, _databasePath);
         }
 
         return NO;
@@ -178,11 +183,11 @@
         return NO;
     }
 
-    result = sqlite3_step(_statement);
+    result = sqlite3_step((sqlite3_stmt *)_statement);
 
     if (result != SQLITE_DONE) {
         if (error != NULL) {
-            *error = LRMSQLiteErrorMake(_database, result, _sql, _databasePath);
+            *error = LRMSQLiteErrorMake((sqlite3 *)_database, result, _sql, _databasePath);
         }
 
         return NO;
@@ -207,15 +212,15 @@
 - (void)reset
 {
     if (_statement != NULL) {
-        sqlite3_reset(_statement);
-        sqlite3_clear_bindings(_statement);
+        sqlite3_reset((sqlite3_stmt *)_statement);
+        sqlite3_clear_bindings((sqlite3_stmt *)_statement);
     }
 }
 
 - (void)finalizeStatement
 {
     if (_statement != NULL) {
-        sqlite3_finalize(_statement);
+        sqlite3_finalize((sqlite3_stmt *)_statement);
         _statement = NULL;
     }
 }
