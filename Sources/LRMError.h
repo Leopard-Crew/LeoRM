@@ -7,8 +7,6 @@
 
 #import <Foundation/Foundation.h>
 
-typedef struct sqlite3 sqlite3;
-
 extern NSString * const LRMErrorDomain;
 
 extern NSString * const LRMErrorSQLiteCodeKey;
@@ -25,7 +23,7 @@ enum {
 NSError *LRMErrorMake(NSInteger code, NSString *message);
 NSError *LRMErrorMakeWithUserInfo(NSInteger code, NSString *message, NSDictionary *extraUserInfo);
 
-NSError *LRMSQLiteErrorMake(sqlite3 *database,
+NSError *LRMSQLiteErrorMake(struct sqlite3 *database,
                             int sqliteCode,
                             NSString *sql,
                             NSString *databasePath);

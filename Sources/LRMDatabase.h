@@ -7,13 +7,11 @@
 
 #import <Foundation/Foundation.h>
 
-typedef struct sqlite3 sqlite3;
-
 @interface LRMDatabase : NSObject
 {
 @private
     NSString *_path;
-    sqlite3 *_database;
+    struct sqlite3 *_database;
 }
 
 + (id)databaseWithPath:(NSString *)path error:(NSError **)error;

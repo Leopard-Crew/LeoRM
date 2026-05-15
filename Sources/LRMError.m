@@ -46,7 +46,7 @@ NSError *LRMErrorMakeWithUserInfo(NSInteger code, NSString *message, NSDictionar
                            userInfo:userInfo];
 }
 
-NSError *LRMSQLiteErrorMake(sqlite3 *database,
+NSError *LRMSQLiteErrorMake(struct sqlite3 *database,
                             int sqliteCode,
                             NSString *sql,
                             NSString *databasePath)
