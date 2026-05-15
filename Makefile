@@ -8,8 +8,8 @@ SDKROOT ?= /Developer/SDKs/MacOSX10.5.sdk
 ARCH ?= ppc
 
 BUILD_DIR = Build
-SOURCES = Sources/LRMError.m Sources/LRMDatabase.m Sources/LRMStatement.m Sources/LRMResultSet.m Sources/LRMRow.m Sources/LRMTransaction.m
-OBJECTS = $(BUILD_DIR)/LRMError.o $(BUILD_DIR)/LRMDatabase.o $(BUILD_DIR)/LRMStatement.o $(BUILD_DIR)/LRMResultSet.o $(BUILD_DIR)/LRMRow.o $(BUILD_DIR)/LRMTransaction.o
+SOURCES = Sources/LRMError.m Sources/LRMDatabase.m Sources/LRMStatement.m Sources/LRMResultSet.m Sources/LRMRow.m Sources/LRMTransaction.m Sources/LRMMigration.m Sources/LRMSchema.m Sources/LRMMigrationRunner.m
+OBJECTS = $(BUILD_DIR)/LRMError.o $(BUILD_DIR)/LRMDatabase.o $(BUILD_DIR)/LRMStatement.o $(BUILD_DIR)/LRMResultSet.o $(BUILD_DIR)/LRMRow.o $(BUILD_DIR)/LRMTransaction.o $(BUILD_DIR)/LRMMigration.o $(BUILD_DIR)/LRMSchema.o $(BUILD_DIR)/LRMMigrationRunner.o
 
 CFLAGS = -isysroot $(SDKROOT) -mmacosx-version-min=10.5 -arch $(ARCH) -Wall -Wextra
 OBJCFLAGS = $(CFLAGS)
@@ -18,7 +18,7 @@ LIBS = -framework Foundation -lsqlite3
 
 .PHONY: all clean smoke
 
-all: $(BUILD_DIR)/libLeoRM.a $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke $(BUILD_DIR)/lrm-metadata-smoke
+all: $(BUILD_DIR)/libLeoRM.a $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke $(BUILD_DIR)/lrm-metadata-smoke $(BUILD_DIR)/lrm-migration-smoke
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
@@ -41,6 +41,15 @@ $(BUILD_DIR)/LRMRow.o: Sources/LRMRow.m Sources/LRMRow.h | $(BUILD_DIR)
 $(BUILD_DIR)/LRMTransaction.o: Sources/LRMTransaction.m Sources/LRMTransaction.h Sources/LRMDatabase.h Sources/LRMStatement.h Sources/LRMError.h | $(BUILD_DIR)
 	$(CC) $(OBJCFLAGS) -c Sources/LRMTransaction.m -o $@
 
+$(BUILD_DIR)/LRMMigration.o: Sources/LRMMigration.m Sources/LRMMigration.h Sources/LRMDatabase.h Sources/LRMStatement.h Sources/LRMError.h | $(BUILD_DIR)
+	$(CC) $(OBJCFLAGS) -c Sources/LRMMigration.m -o $@
+
+$(BUILD_DIR)/LRMSchema.o: Sources/LRMSchema.m Sources/LRMSchema.h Sources/LRMMigration.h Sources/LRMError.h | $(BUILD_DIR)
+	$(CC) $(OBJCFLAGS) -c Sources/LRMSchema.m -o $@
+
+$(BUILD_DIR)/LRMMigrationRunner.o: Sources/LRMMigrationRunner.m Sources/LRMMigrationRunner.h Sources/LRMDatabase.h Sources/LRMMigration.h Sources/LRMSchema.h Sources/LRMTransaction.h Sources/LRMError.h | $(BUILD_DIR)
+	$(CC) $(OBJCFLAGS) -c Sources/LRMMigrationRunner.m -o $@
+
 $(BUILD_DIR)/libLeoRM.a: $(OBJECTS)
 	libtool -static -o $@ $(OBJECTS)
 
@@ -62,13 +71,17 @@ $(BUILD_DIR)/lrm-transaction-smoke: Tests/transaction_main.m $(BUILD_DIR)/libLeo
 $(BUILD_DIR)/lrm-metadata-smoke: Tests/metadata_main.m $(BUILD_DIR)/libLeoRM.a
 	$(CC) $(OBJCFLAGS) Tests/metadata_main.m $(BUILD_DIR)/libLeoRM.a $(LIBS) -o $@
 
-smoke: $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke $(BUILD_DIR)/lrm-metadata-smoke
+$(BUILD_DIR)/lrm-migration-smoke: Tests/migration_main.m $(BUILD_DIR)/libLeoRM.a
+	$(CC) $(OBJCFLAGS) Tests/migration_main.m $(BUILD_DIR)/libLeoRM.a $(LIBS) -o $@
+
+smoke: $(BUILD_DIR)/lrm-smoke $(BUILD_DIR)/lrm-error-smoke $(BUILD_DIR)/lrm-statement-smoke $(BUILD_DIR)/lrm-query-smoke $(BUILD_DIR)/lrm-transaction-smoke $(BUILD_DIR)/lrm-metadata-smoke $(BUILD_DIR)/lrm-migration-smoke
 	$(BUILD_DIR)/lrm-smoke
 	$(BUILD_DIR)/lrm-error-smoke
 	$(BUILD_DIR)/lrm-statement-smoke
 	$(BUILD_DIR)/lrm-query-smoke
 	$(BUILD_DIR)/lrm-transaction-smoke
 	$(BUILD_DIR)/lrm-metadata-smoke
+	$(BUILD_DIR)/lrm-migration-smoke
 
 clean:
 	rm -rf $(BUILD_DIR)

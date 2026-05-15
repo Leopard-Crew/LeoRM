@@ -13,3 +13,6 @@
 #import "LRMResultSet.h"
 #import "LRMRow.h"
 #import "LRMTransaction.h"
+#import "LRMMigration.h"
+#import "LRMSchema.h"
+#import "LRMMigrationRunner.h"
