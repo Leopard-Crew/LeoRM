@@ -28,6 +28,8 @@ But it keeps SQL visible, schemas open, and domain models outside the core.
 ## Architecture notes
 
 - [Scope lock](docs/scope-lock.md)
+- [Class map](docs/class-map.md)
+- [V1 roadmap](docs/v1-roadmap.md)
 - [Core Data lessons](docs/design-notes/core-data-lessons.md)
 - [SQLite boundaries](docs/design-notes/sqlite-boundaries.md)
 - [Rejected patterns](docs/design-notes/rejected-patterns.md)
