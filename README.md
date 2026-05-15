@@ -33,3 +33,9 @@ But it keeps SQL visible, schemas open, and domain models outside the core.
 - [Core Data lessons](docs/design-notes/core-data-lessons.md)
 - [SQLite boundaries](docs/design-notes/sqlite-boundaries.md)
 - [Rejected patterns](docs/design-notes/rejected-patterns.md)
+
+## Quality and positioning
+
+- [LeoRM for the skeptical programmer](docs/positioning/skeptical-programmer.md)
+- [Cupertino 2009 API culture](docs/quality/cupertino-2009-api-culture.md)
+
