@@ -38,6 +38,7 @@ ARCHIVE_ROOT="$PACKAGE_NAME"
 RELEASE_DIR="$ROOT_DIR/Build/Release"
 STAGING_DIR="$RELEASE_DIR/$ARCHIVE_ROOT"
 ARCHIVE_PATH="$RELEASE_DIR/$ARCHIVE_ROOT.tar.gz"
+CHECKSUM_PATH="$ARCHIVE_PATH.sha256"
 MANIFEST_PATH="$STAGING_DIR/RELEASE-MANIFEST.txt"
 
 if [ -n "$(git status --short)" ]; then
@@ -113,6 +114,9 @@ Included:
   Documentation/HeaderDoc/
   RELEASE-MANIFEST.txt
 
+External release artifact:
+  $ARCHIVE_ROOT.tar.gz.sha256
+
 Excluded:
   .git/
   Build/*.o
@@ -132,6 +136,21 @@ MANIFEST
     cd "$RELEASE_DIR"
     tar -czf "$ARCHIVE_PATH" "$ARCHIVE_ROOT"
 )
+
+if command -v shasum >/dev/null 2>&1; then
+    (
+        cd "$RELEASE_DIR"
+        shasum -a 256 "$ARCHIVE_ROOT.tar.gz" > "$ARCHIVE_ROOT.tar.gz.sha256"
+    )
+elif command -v openssl >/dev/null 2>&1; then
+    (
+        cd "$RELEASE_DIR"
+        openssl dgst -sha256 "$ARCHIVE_ROOT.tar.gz" | sed 's/^SHA256(//; s/)= /  /' > "$ARCHIVE_ROOT.tar.gz.sha256"
+    )
+else
+    echo "error: neither shasum nor openssl found for SHA-256 generation." >&2
+    exit 1
+fi
 
 require_archive_entry()
 {
@@ -160,6 +179,9 @@ echo "  $STAGING_DIR"
 
 echo "Release archive:"
 echo "  $ARCHIVE_PATH"
+
+echo "SHA-256 checksum:"
+echo "  $CHECKSUM_PATH"
 
 echo "Archive source contents preview:"
 tar -tzf "$ARCHIVE_PATH" | grep -E "/(Sources|Tests|Examples|Tools)/|/(README.md|Makefile|RELEASE-MANIFEST.txt)$" | head -80
